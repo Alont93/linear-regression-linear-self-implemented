@@ -1,0 +1,3 @@
+1. removed corrupted rows
+2. is nan removed corrupted cells
+3. cleaned not logical data (negative price)

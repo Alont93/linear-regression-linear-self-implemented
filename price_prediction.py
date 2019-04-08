@@ -37,35 +37,16 @@ def add_affine_parameter_to_samples(samples):
     return np.hstack((samples,np.ones((samples.shape[0],1))))
 
 
-def find_approximation_vector_non_singular_case(samples, labels):
-    X = samples
-    y = labels
-    return np.linalg.inv(X @ X.T) @ X @ y
-
-
-def find_approximation_vector_singular_case(samples, labels):
-    X = samples
-    y = labels
-    return np.linalg.pinv(X).T @ y
-
-
-# checks if a matrix is non-singular
-def is_invertible(m):
-    return m.shape[0] == m.shape[1] and np.linalg.matrix_rank(m) == m.shape[0]
-
-
 def find_approximation_vector(samples, labels):
     X = samples
-
-    if(is_invertible(X @ X.t)):
-        return find_approximation_vector_non_singular_case(samples, labels)
-
-    return find_approximation_vector_singular_case(samples, labels)
+    y = labels
+    return np.linalg.pinv(X) @ y
 
 
 data = read_data()
 X, Y = split_samples_and_lables(data)
 X = add_affine_parameter_to_samples(X)
+w = find_approximation_vector(X, Y)
 
 
 x = 1
