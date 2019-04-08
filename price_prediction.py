@@ -4,6 +4,7 @@ import pandas as pd
 DATE_LENGTH = 8
 LABEL_COLUMN = 2
 DATA_PATH = './kc_house_data.csv'
+NORMALIZE_SAMPLES = True
 
 
 def np_read_data():
@@ -40,6 +41,10 @@ def add_affine_parameter_to_samples(samples):
 def find_approximation_vector(samples, labels):
     X = samples
     y = labels
+
+    if NORMALIZE_SAMPLES:
+        X[:,0:-1] = (X[:,0:-1] - np.min(X[:,0:-1] ,axis=0)) / np.ptp(X[:,0:-1], axis=0)
+
     return np.linalg.pinv(X) @ y
 
 
