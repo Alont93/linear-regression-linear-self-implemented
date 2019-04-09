@@ -7,6 +7,7 @@ DATE_LENGTH = 8
 LABEL_COLUMN = 2
 DATA_PATH = './kc_house_data.csv'
 NORMALIZE_SAMPLES = False
+DIVIDE_ZIPCODE_ONLY_BY_AREA = False
 
 
 def np_read_data():
@@ -22,6 +23,10 @@ def read_data():
 
 
 def handle_categorical_variables(data_table):
+
+    if DIVIDE_ZIPCODE_ONLY_BY_AREA:
+        data_table['zipcode'] = data_table['zipcode'].astype(str).str[0:-1]
+
     data_table = pd.concat((data_table,pd.get_dummies(data_table.zipcode)),1)
     # remove linear independent variable
     data_table.drop(data_table.columns[[-1,]], axis=1, inplace=True)
@@ -73,7 +78,8 @@ def randomly_split_data(data, percent_of_training):
 
 def q8():
     data = read_data()
-    results = []
+    train_losses = []
+    test_losses = []
 
     for i in range(1, 100):
         training_data, test_data = randomly_split_data(data, i)
@@ -84,18 +90,24 @@ def q8():
         X_test = add_affine_parameter_to_samples(X_test)
 
         hypothesis = find_approximation_vector(X_train, Y_train)
-        predicted_prices = predict_prices(X_test, hypothesis)
-        loss = calculate_loss(predicted_prices, Y_test)
+        train_predicted_prices = predict_prices(X_train, hypothesis)
+        test_predicted_prices = predict_prices(X_test, hypothesis)
 
-        results.append(loss)
+        train_loss = calculate_loss(train_predicted_prices, Y_train)
+        test_loss = calculate_loss(test_predicted_prices, Y_test)
+
+        train_losses.append(train_loss)
+        test_losses.append(test_loss)
         print(i)
 
-    print(results)
-    plt.plot(results)
+    plt.plot(train_losses, label="train error")
+    plt.plot(test_losses, label="test error")
     plt.xlabel("percentage of training data")
     plt.ylabel("loss")
-    plt.title("Loss as a function of the percentage of training data")
+    plt.title("Errors as a function of the percentage of training data")
+    plt.legend()
     plt.show()
+
 
 q8()
 
