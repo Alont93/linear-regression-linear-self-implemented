@@ -98,7 +98,6 @@ def q8():
 
         train_losses.append(train_loss)
         test_losses.append(test_loss)
-        print(i)
 
     plt.plot(train_losses, label="train error")
     plt.plot(test_losses, label="test error")
@@ -110,10 +109,3 @@ def q8():
 
 
 q8()
-
-# data = read_data()
-# X, Y = split_samples_and_lables(data)
-# X = add_affine_parameter_to_samples(X)
-# w = find_approximation_vector(X, Y)
-
-x = 1
